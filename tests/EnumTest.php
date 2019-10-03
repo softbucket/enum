@@ -41,5 +41,6 @@ class EnumTest extends TestCase
         $this->assertTrue(EnumTestClassLoose::four() instanceof EnumTestClassLoose);
         $five = 'five';
         $this->assertTrue(EnumTestClassLoose::{$five}() instanceof EnumTestClassLoose);
+        $this->assertFalse(true);
     }
 }
