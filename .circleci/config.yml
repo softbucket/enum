@@ -8,12 +8,4 @@ jobs:
       - checkout
       - run: echo $(ls)
       - run: composer install
-      - run:
-          command: |
-            mkdir -p ~/phpunit
-            phpunit --log-junit ~/phpunit/junit.xml tests
-          when: always
-      - store_test_results:
-          path: ~/phpunit
-      - store_artifacts:
-          path: ~/phpunit
+      - run: ./vendor/bin/phpunit
