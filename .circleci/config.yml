@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: circleci/php:5.6-cli
     steps:
-      - run: ls
+      - run: echo $(ls)
       - run: composer install
       - run:
           command: |
