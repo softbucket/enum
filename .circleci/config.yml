@@ -1,0 +1,11 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/php:5.6-cli
+    steps:
+      - checkout
+      - run: echo $(ls)
+      - run: composer install
+      - run: ./vendor/bin/phpunit
