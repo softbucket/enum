@@ -4,12 +4,13 @@
  * @license http://www.opensource.org/licenses/mit-license.php MIT (see the LICENSE file)
  */
 
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
 namespace Softbucket\Enum;
 
 /**
  * Base Enum class
  *
- * Implement by providing the methods in the class docblock
+ * Implement by extending this class and defining the methods in the class doc block
  *
  * @author Ed Mak <ed.mak.is@gmail.com>
  */
@@ -46,30 +47,21 @@ abstract class Enum
      */
     protected static function getEnumFromName($className, $enumName)
     {
-        $enum = isset(static::$enumCacheFromName[$className][$enumName]) ? static::$enumCacheFromName[$className][$enumName] : null;
+        $enum = isset(self::$enumCacheFromName[$className][$enumName]) ? static::$enumCacheFromName[$className][$enumName] : null;
         if ($enum !== null) {
             return $enum;
         }
 
-        if (static::enforceDocBlock() === false) { //ie we can always use $enumName
-            static::$enumCacheFromName[$className][$enumName] = new static($enumName);
-        } else if (!isset(self::$enumCacheFromName[$className])) { //ie the cache has nothing and we have to build it from the docblocks
-            static::$enumCacheFromName[$className] = static::buildNewEnumsFromDocblocks($className);
-        }
+        static::initializeEnums($className);
 
-        $enum = isset(static::$enumCacheFromName[$className][$enumName]) ? static::$enumCacheFromName[$className][$enumName] : null;
+        $enum = isset(self::$enumCacheFromName[$className][$enumName]) ? static::$enumCacheFromName[$className][$enumName] : null;
         return $enum;
     }
 
     /**
-     * You can override this method to return false if you want to avoid docblock parsing (which is a theoretical speed up)
-     * @return bool
+     * @param $className
+     * @return static[]
      */
-    protected static function enforceDocBlock()
-    {
-        return true;
-    }
-
     protected static function buildNewEnumsFromDocBlocks($className)
     {
         $enums = array();
@@ -93,17 +85,52 @@ abstract class Enum
                 }
             }
             if ($methodName !== null) {
-                $enums[$methodName] = new static($methodName);
+                $enums[$methodName] = new $className($methodName);
             }
         }
         return $enums;
     }
 
     /**
+     * @param $className
+     */
+    protected static function initializeEnums($className)
+    {
+        if (!isset(self::$enumCacheFromName[$className])) { //ie the cache has nothing and we have to build it from the doc blocks
+            self::$enumCacheFromName[$className] = static::buildNewEnumsFromDocblocks($className);
+        }
+    }
+
+    /**
+     * @param $className
+     * @return static[]
+     */
+    protected static function getAllEnums($className)
+    {
+        static::initializeEnums($className);
+        return self::$enumCacheFromName[$className];
+    }
+
+    /**
+     * Name of the enum. Always equal to the method name.
      * @return string
      */
     public function name()
     {
         return $this->enumName;
+    }
+
+    /**
+     * If the constant isn't defined, then this returns the name
+     * @return mixed
+     */
+    public function value()
+    {
+        $constantName = static::class . '::' . $this->name();
+        if(defined($constantName)) {
+            return constant($constantName);
+        } else {
+            return $this->name();
+        }
     }
 }

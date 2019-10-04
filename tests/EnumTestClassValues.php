@@ -12,10 +12,7 @@ use Softbucket\Enum\Enum;
  * @method static self one()
  * @method static self two()
  */
-class EnumTestClassLoose extends Enum
+class EnumTestClassValues extends Enum
 {
-    protected static function enforceDocBlock()
-    {
-        return false;
-    }
+    const one = '1';
 }

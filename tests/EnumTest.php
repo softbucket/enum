@@ -6,16 +6,27 @@
 namespace Softbucket\Tests\Enum;
 
 use PHPUnit\Framework\TestCase;
+use Softbucket\Enum\EnumHelper;
 
 /**
  * @internal
  */
 class EnumTest extends TestCase
 {
-    public function testEnum()
+    public function testEnumHelper()
     {
-        //strict
+        $allEnums = EnumHelper::allEnums(EnumTestClassStrict::class);
+        $this->assertTrue($allEnums == ['one' => EnumTestClassStrict::one(), 'two' => EnumTestClassStrict::two()]);
 
+        $allEnumsKvp = EnumHelper::allEnumsAsKeyValuePair(EnumTestClassValues::class);
+        $this->assertTrue($allEnumsKvp == ['one' => '1', 'two' => 'two']);
+
+        $this->assertTrue(EnumHelper::findByName(EnumTestClassValues::class, 'one') === EnumTestClassvalues::one());
+        $this->assertTrue(EnumHelper::findByValue(EnumTestClassValues::class, '1') === EnumTestClassvalues::one());
+    }
+
+    public function testStrictEnum()
+    {
         //test strict comparison of supposedly same enums
         $this->assertTrue(EnumTestClassStrict::one() === EnumTestClassStrict::one());
 
@@ -50,43 +61,22 @@ class EnumTest extends TestCase
         //test correct behaviour of incorrect parsing by returning null
         $five = 'five';
         $this->assertTrue(EnumTestClassStrict::{$five}() === null);
+    }
 
-        //loose comparisons
+    public function testEnumValue()
+    {
+        $this->assertTrue(EnumTestClassValues::one()->value() === '1');
+        $this->assertTrue(EnumTestClassValues::two()->value() === 'two');
+    }
 
-        //test strict comparison of supposedly same enums
-        $this->assertTrue(EnumTestClassLoose::one() === EnumTestClassLoose::one());
+    public function testEnumFailures()
+    {
+        $serializedEnum = serialize(EnumTestClassStrict::one());
 
-        //test weak comparison of same enums
-        /** @noinspection PhpNonStrictObjectEqualityInspection */
-        $this->assertTrue(EnumTestClassLoose::one() == EnumTestClassLoose::one());
+        //loose comparison succeeds
+        $this->assertTrue(unserialize($serializedEnum) == EnumTestClassStrict::one());
 
-        //test strict comparison of different objects
-        $this->assertTrue(EnumTestClassLoose::one() !== EnumTestClassLoose::two());
-
-        //test weak comparison of different enums
-        /** @noinspection PhpNonStrictObjectEqualityInspection */
-        $this->assertTrue(EnumTestClassLoose::one() != EnumTestClassLoose::two());
-
-        //test weak comparison failure of two different enums
-        /** @noinspection PhpNonStrictObjectEqualityInspection */
-        $this->assertFalse(EnumTestClassLoose::one() == EnumTestClassLoose::two());
-
-        //test strict comparison failure of two different enums
-        $this->assertFalse(EnumTestClassLoose::one() === EnumTestClassLoose::two());
-
-        //test name
-        $this->assertSame('one', EnumTestClassLoose::one()->name());
-
-        //test parsing of a valid enum
-        $one = 'one';
-        $this->assertTrue(EnumTestClassLoose::one() === EnumTestClassLoose::{$one}());
-
-        //test correct behaviour of invalid enum
-        /** @noinspection PhpUndefinedMethodInspection */
-        $this->assertTrue(EnumTestClassLoose::four() instanceof EnumTestClassLoose);
-
-        //test correct behaviour of incorrect parsing by returning an enum
-        $five = 'five';
-        $this->assertTrue(EnumTestClassLoose::{$five}() instanceof EnumTestClassLoose);
+        //this is expected to fail since this is not the same object anymore
+        $this->assertFalse(unserialize($serializedEnum) === EnumTestClassStrict::one());
     }
 }
