@@ -79,4 +79,55 @@ class EnumTest extends TestCase
         //this is expected to fail since this is not the same object anymore
         $this->assertFalse(unserialize($serializedEnum) === EnumTestClassStrict::one());
     }
+
+    public function testEnumSwitch()
+    {
+        $oneEnum = EnumTestClassStrict::one();
+        switch ($oneEnum)
+        {
+            case EnumTestClassStrict::one():
+                $success = true;
+                break;
+            default:
+                $success = false;
+                break;
+        }
+        $this->assertTrue($success === true);
+
+        $oneEnum = EnumTestClassStrict::{'two'}();
+        switch ($oneEnum)
+        {
+            case EnumTestClassStrict::{'two'}():
+                $success = true;
+                break;
+            default:
+                $success = false;
+                break;
+        }
+        $this->assertTrue($success === true);
+
+        $oneEnum = EnumTestClassStrict::{'two'}();
+        switch ($oneEnum)
+        {
+            case EnumTestClassStrict::two():
+                $success = true;
+                break;
+            default:
+                $success = false;
+                break;
+        }
+        $this->assertTrue($success === true);
+
+        $oneEnum = EnumTestClassStrict::{'three'}();
+        switch ($oneEnum)
+        {
+            case EnumTestClassStrict::two():
+                $success = true;
+                break;
+            default:
+                $success = false;
+                break;
+        }
+        $this->assertTrue($success === false);
+    }
 }
