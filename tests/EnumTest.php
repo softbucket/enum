@@ -15,77 +15,122 @@ class EnumTest extends TestCase
 {
     public function testEnumHelper()
     {
-        $allEnums = EnumHelper::allEnums(EnumTestClassStrict::class);
-        $this->assertTrue($allEnums == ['one' => EnumTestClassStrict::one(), 'two' => EnumTestClassStrict::two()]);
-
-        $allEnumsKvp = EnumHelper::allEnumsAsKeyValuePair(EnumTestClassValues::class);
-        $this->assertTrue($allEnumsKvp == ['one' => '1', 'two' => 'two']);
-
-        $this->assertTrue(EnumHelper::findByName(EnumTestClassValues::class, 'one') === EnumTestClassvalues::one());
-        $this->assertTrue(EnumHelper::findByValue(EnumTestClassValues::class, '1') === EnumTestClassvalues::one());
+        $allEnums = EnumHelper::allEnums(EnumTestClassDocBlockEnforced::class);
+        $this->assertTrue($allEnums == ['one' => EnumTestClassDocBlockEnforced::one(), 'two' => EnumTestClassDocBlockEnforced::two()]);
     }
 
-    public function testStrictEnum()
+    public function testEnumBasic()
     {
-        //test strict comparison of supposedly same enums
-        $this->assertTrue(EnumTestClassStrict::one() === EnumTestClassStrict::one());
+        //test strict comparison of same enums part 1
+        $this->assertTrue(EnumTestClassLoose::one() === EnumTestClassLoose::one());
+
+        //test strict comparison of same enums part 2
+        $one = 'one';
+        $this->assertTrue(EnumTestClassLoose::one() === EnumTestClassLoose::{$one}());
 
         //test loose comparison of same enums
         /** @noinspection PhpNonStrictObjectEqualityInspection */
-        $this->assertTrue(EnumTestClassStrict::one() == EnumTestClassStrict::one());
+        $this->assertTrue(EnumTestClassLoose::one() == EnumTestClassLoose::one());
 
-        /** @noinspection PhpNonStrictObjectEqualityInspection */
         //test strict comparison of different objects
-        $this->assertTrue(EnumTestClassStrict::one() !== EnumTestClassStrict::two());
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        $this->assertTrue(EnumTestClassLoose::one() !== EnumTestClassLoose::two());
 
         //test weak comparison of different enums
         /** @noinspection PhpNonStrictObjectEqualityInspection */
-        $this->assertTrue(EnumTestClassStrict::one() != EnumTestClassStrict::two());
+        $this->assertTrue(EnumTestClassLoose::one() != EnumTestClassLoose::two());
 
-        //test weak comparison failure of two different enums
+        //test weak comparison of two different enums to fail
         /** @noinspection PhpNonStrictObjectEqualityInspection */
-        $this->assertFalse(EnumTestClassStrict::one() == EnumTestClassStrict::two());
+        $this->assertFalse(EnumTestClassLoose::one() == EnumTestClassLoose::two());
 
-        //test strict comparison failure of two different enums
-        $this->assertFalse(EnumTestClassStrict::one() === EnumTestClassStrict::two());
-        $this->assertSame('one', EnumTestClassStrict::one()->name());
+        //test strict comparison two different enums to fail part 1
+        $this->assertFalse(EnumTestClassLoose::one() === EnumTestClassLoose::two());
 
-        //test strict comparison failure of two different enums
-        $one = 'one';
-        $this->assertTrue(EnumTestClassStrict::one() === EnumTestClassStrict::{$one}());
+        //test strict comparison two different enums to fail part 2
+        $this->assertTrue(EnumTestClassLoose::one() === EnumTestClassLoose::{$one}());
 
+        //test enum name
+        $this->assertSame('one', EnumTestClassLoose::one()->name());
+    }
+
+    public function testLooseEnumAdvanced()
+    {
         //test name
         /** @noinspection PhpUndefinedMethodInspection */
-        $this->assertTrue(EnumTestClassStrict::four() === null);
+        $this->assertFalse(EnumTestClassLoose::four() === null);
 
         //test correct behaviour of incorrect parsing by returning null
         $five = 'five';
-        $this->assertTrue(EnumTestClassStrict::{$five}() === null);
+        $this->assertFalse(EnumTestClassLoose::{$five}() === null);
     }
 
-    public function testEnumValue()
+    /**
+     * These tests should mirror testEnumBasic() except against EnumDocBlockEnforced
+     */
+    public function testStrictEnumBasic()
     {
-        $this->assertTrue(EnumTestClassValues::one()->value() === '1');
-        $this->assertTrue(EnumTestClassValues::two()->value() === 'two');
+        //test strict comparison of same enums part 1
+        $this->assertTrue(EnumTestClassDocBlockEnforced::one() === EnumTestClassDocBlockEnforced::one());
+
+        //test strict comparison of same enums part 2
+        $one = 'one';
+        $this->assertTrue(EnumTestClassDocBlockEnforced::one() === EnumTestClassDocBlockEnforced::{$one}());
+
+        //test loose comparison of same enums
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        $this->assertTrue(EnumTestClassDocBlockEnforced::one() == EnumTestClassDocBlockEnforced::one());
+
+        //test strict comparison of different objects
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        $this->assertTrue(EnumTestClassDocBlockEnforced::one() !== EnumTestClassDocBlockEnforced::two());
+
+        //test weak comparison of different enums
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        $this->assertTrue(EnumTestClassDocBlockEnforced::one() != EnumTestClassDocBlockEnforced::two());
+
+        //test weak comparison of two different enums to fail
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        $this->assertFalse(EnumTestClassDocBlockEnforced::one() == EnumTestClassDocBlockEnforced::two());
+
+        //test strict comparison two different enums to fail part 1
+        $this->assertFalse(EnumTestClassDocBlockEnforced::one() === EnumTestClassDocBlockEnforced::two());
+
+        //test strict comparison two different enums to fail part 2
+        $this->assertTrue(EnumTestClassDocBlockEnforced::one() === EnumTestClassDocBlockEnforced::{$one}());
+        
+        //test enum name
+        $this->assertSame('one', EnumTestClassDocBlockEnforced::one()->name());
+    }
+
+    public function testStrictEnumAdvanced()
+    {
+        //test name
+        /** @noinspection PhpUndefinedMethodInspection */
+        $this->assertTrue(EnumTestClassDocBlockEnforced::four() === null);
+
+        //test correct behaviour of incorrect parsing by returning null
+        $five = 'five';
+        $this->assertTrue(EnumTestClassDocBlockEnforced::{$five}() === null);
     }
 
     public function testEnumFailures()
     {
-        $serializedEnum = serialize(EnumTestClassStrict::one());
+        $serializedEnum = serialize(EnumTestClassDocBlockEnforced::one());
 
         //loose comparison succeeds
-        $this->assertTrue(unserialize($serializedEnum) == EnumTestClassStrict::one());
+        $this->assertTrue(unserialize($serializedEnum) == EnumTestClassDocBlockEnforced::one());
 
         //this is expected to fail since this is not the same object anymore
-        $this->assertFalse(unserialize($serializedEnum) === EnumTestClassStrict::one());
+        $this->assertFalse(unserialize($serializedEnum) === EnumTestClassDocBlockEnforced::one());
     }
 
     public function testEnumSwitch()
     {
-        $oneEnum = EnumTestClassStrict::one();
+        $oneEnum = EnumTestClassDocBlockEnforced::one();
         switch ($oneEnum)
         {
-            case EnumTestClassStrict::one():
+            case EnumTestClassDocBlockEnforced::one():
                 $success = true;
                 break;
             default:
@@ -94,10 +139,10 @@ class EnumTest extends TestCase
         }
         $this->assertTrue($success === true);
 
-        $oneEnum = EnumTestClassStrict::{'two'}();
+        $oneEnum = EnumTestClassDocBlockEnforced::{'two'}();
         switch ($oneEnum)
         {
-            case EnumTestClassStrict::{'two'}():
+            case EnumTestClassDocBlockEnforced::{'two'}():
                 $success = true;
                 break;
             default:
@@ -106,10 +151,10 @@ class EnumTest extends TestCase
         }
         $this->assertTrue($success === true);
 
-        $oneEnum = EnumTestClassStrict::{'two'}();
+        $oneEnum = EnumTestClassDocBlockEnforced::{'two'}();
         switch ($oneEnum)
         {
-            case EnumTestClassStrict::two():
+            case EnumTestClassDocBlockEnforced::two():
                 $success = true;
                 break;
             default:
@@ -118,10 +163,10 @@ class EnumTest extends TestCase
         }
         $this->assertTrue($success === true);
 
-        $oneEnum = EnumTestClassStrict::{'three'}();
+        $oneEnum = EnumTestClassDocBlockEnforced::{'three'}();
         switch ($oneEnum)
         {
-            case EnumTestClassStrict::two():
+            case EnumTestClassDocBlockEnforced::two():
                 $success = true;
                 break;
             default:

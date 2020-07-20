@@ -16,8 +16,11 @@ namespace Softbucket\Enum;
  */
 abstract class Enum
 {
-    /** @var Enum[][] */
+    /** @var static[][] */
     protected static $enumCacheFromName = array();
+
+    /** @var bool[][] */
+    protected static $enumInitialisedFromDocBlock = array();
 
     /** @var string  */
     protected $enumName;
@@ -36,26 +39,11 @@ abstract class Enum
     public static function __callStatic($methodName, $arguments)
     {
         $className = static::class;
-        return static::getEnumFromName($className, $methodName);
-    }
-
-    /**
-     * @param string $className
-     * @param string $enumName
-     *
-     * @return static
-     */
-    protected static function getEnumFromName($className, $enumName)
-    {
-        $enum = isset(self::$enumCacheFromName[$className][$enumName]) ? static::$enumCacheFromName[$className][$enumName] : null;
-        if ($enum !== null) {
-            return $enum;
+        if (isset($enumCacheFromName[$className][$methodName])) {
+            return $enumCacheFromName[$className][$methodName];
         }
-
-        static::initializeEnums($className);
-
-        $enum = isset(self::$enumCacheFromName[$className][$enumName]) ? static::$enumCacheFromName[$className][$enumName] : null;
-        return $enum;
+        $enumCacheFromName[$className][$methodName] = new static($methodName);
+        return $enumCacheFromName[$className][$methodName];
     }
 
     /**
@@ -96,8 +84,14 @@ abstract class Enum
      */
     protected static function initializeEnums($className)
     {
-        if (!isset(self::$enumCacheFromName[$className])) { //ie the cache has nothing and we have to build it from the doc blocks
-            self::$enumCacheFromName[$className] = static::buildNewEnumsFromDocblocks($className);
+        if (!isset(self::$enumInitialisedFromDocBlock[$className])) { //ie the cache has nothing and we have to build it from the doc blocks
+            $newEnums = static::buildNewEnumsFromDocblocks($className);
+            foreach ($newEnums as $enumName => $enum) {
+                if (!isset(self::$enumCacheFromName[$className][$enumName])) {
+                    self::$enumCacheFromName[$className][$enumName] = $enum;
+                }
+            }
+            self::$enumInitialisedFromDocBlock[$className] = true;
         }
     }
 
@@ -118,19 +112,5 @@ abstract class Enum
     public function name()
     {
         return $this->enumName;
-    }
-
-    /**
-     * If the constant isn't defined, then this returns the name
-     * @return mixed
-     */
-    public function value()
-    {
-        $constantName = static::class . '::' . $this->name();
-        if(defined($constantName)) {
-            return constant($constantName);
-        } else {
-            return $this->name();
-        }
     }
 }

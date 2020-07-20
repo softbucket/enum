@@ -14,8 +14,4 @@ use Softbucket\Enum\Enum;
  */
 class EnumTestClassLoose extends Enum
 {
-    protected static function enforceDocBlock()
-    {
-        return false;
-    }
 }
