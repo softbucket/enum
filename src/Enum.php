@@ -39,11 +39,11 @@ abstract class Enum
     public static function __callStatic($methodName, $arguments)
     {
         $className = static::class;
-        if (isset($enumCacheFromName[$className][$methodName])) {
-            return $enumCacheFromName[$className][$methodName];
+        if (isset(self::$enumCacheFromName[$className][$methodName])) {
+            return self::$enumCacheFromName[$className][$methodName];
         }
-        $enumCacheFromName[$className][$methodName] = new static($methodName);
-        return $enumCacheFromName[$className][$methodName];
+        self::$enumCacheFromName[$className][$methodName] = new static($methodName);
+        return self::$enumCacheFromName[$className][$methodName];
     }
 
     /**

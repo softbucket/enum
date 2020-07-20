@@ -15,8 +15,8 @@ class EnumTest extends TestCase
 {
     public function testEnumHelper()
     {
-        $allEnums = EnumHelper::allEnums(EnumTestClassDocBlockEnforced::class);
-        $this->assertTrue($allEnums == ['one' => EnumTestClassDocBlockEnforced::one(), 'two' => EnumTestClassDocBlockEnforced::two()]);
+        $allEnums = EnumHelper::allEnums(EnumTestClassEnforced::class);
+        $this->assertTrue($allEnums == ['one' => EnumTestClassEnforced::one(), 'two' => EnumTestClassEnforced::two()]);
     }
 
     public function testEnumBasic()
@@ -71,66 +71,66 @@ class EnumTest extends TestCase
     public function testStrictEnumBasic()
     {
         //test strict comparison of same enums part 1
-        $this->assertTrue(EnumTestClassDocBlockEnforced::one() === EnumTestClassDocBlockEnforced::one());
+        $this->assertTrue(EnumTestClassEnforced::one() === EnumTestClassEnforced::one());
 
         //test strict comparison of same enums part 2
         $one = 'one';
-        $this->assertTrue(EnumTestClassDocBlockEnforced::one() === EnumTestClassDocBlockEnforced::{$one}());
+        $this->assertTrue(EnumTestClassEnforced::one() === EnumTestClassEnforced::{$one}());
 
         //test loose comparison of same enums
         /** @noinspection PhpNonStrictObjectEqualityInspection */
-        $this->assertTrue(EnumTestClassDocBlockEnforced::one() == EnumTestClassDocBlockEnforced::one());
+        $this->assertTrue(EnumTestClassEnforced::one() == EnumTestClassEnforced::one());
 
         //test strict comparison of different objects
         /** @noinspection PhpNonStrictObjectEqualityInspection */
-        $this->assertTrue(EnumTestClassDocBlockEnforced::one() !== EnumTestClassDocBlockEnforced::two());
+        $this->assertTrue(EnumTestClassEnforced::one() !== EnumTestClassEnforced::two());
 
         //test weak comparison of different enums
         /** @noinspection PhpNonStrictObjectEqualityInspection */
-        $this->assertTrue(EnumTestClassDocBlockEnforced::one() != EnumTestClassDocBlockEnforced::two());
+        $this->assertTrue(EnumTestClassEnforced::one() != EnumTestClassEnforced::two());
 
         //test weak comparison of two different enums to fail
         /** @noinspection PhpNonStrictObjectEqualityInspection */
-        $this->assertFalse(EnumTestClassDocBlockEnforced::one() == EnumTestClassDocBlockEnforced::two());
+        $this->assertFalse(EnumTestClassEnforced::one() == EnumTestClassEnforced::two());
 
         //test strict comparison two different enums to fail part 1
-        $this->assertFalse(EnumTestClassDocBlockEnforced::one() === EnumTestClassDocBlockEnforced::two());
+        $this->assertFalse(EnumTestClassEnforced::one() === EnumTestClassEnforced::two());
 
         //test strict comparison two different enums to fail part 2
-        $this->assertTrue(EnumTestClassDocBlockEnforced::one() === EnumTestClassDocBlockEnforced::{$one}());
+        $this->assertTrue(EnumTestClassEnforced::one() === EnumTestClassEnforced::{$one}());
         
         //test enum name
-        $this->assertSame('one', EnumTestClassDocBlockEnforced::one()->name());
+        $this->assertSame('one', EnumTestClassEnforced::one()->name());
     }
 
     public function testStrictEnumAdvanced()
     {
         //test name
         /** @noinspection PhpUndefinedMethodInspection */
-        $this->assertTrue(EnumTestClassDocBlockEnforced::four() === null);
+        $this->assertTrue(EnumTestClassEnforced::four() === null);
 
         //test correct behaviour of incorrect parsing by returning null
         $five = 'five';
-        $this->assertTrue(EnumTestClassDocBlockEnforced::{$five}() === null);
+        $this->assertTrue(EnumTestClassEnforced::{$five}() === null);
     }
 
     public function testEnumFailures()
     {
-        $serializedEnum = serialize(EnumTestClassDocBlockEnforced::one());
+        $serializedEnum = serialize(EnumTestClassEnforced::one());
 
         //loose comparison succeeds
-        $this->assertTrue(unserialize($serializedEnum) == EnumTestClassDocBlockEnforced::one());
+        $this->assertTrue(unserialize($serializedEnum) == EnumTestClassEnforced::one());
 
         //this is expected to fail since this is not the same object anymore
-        $this->assertFalse(unserialize($serializedEnum) === EnumTestClassDocBlockEnforced::one());
+        $this->assertFalse(unserialize($serializedEnum) === EnumTestClassEnforced::one());
     }
 
     public function testEnumSwitch()
     {
-        $oneEnum = EnumTestClassDocBlockEnforced::one();
+        $oneEnum = EnumTestClassEnforced::one();
         switch ($oneEnum)
         {
-            case EnumTestClassDocBlockEnforced::one():
+            case EnumTestClassEnforced::one():
                 $success = true;
                 break;
             default:
@@ -139,10 +139,10 @@ class EnumTest extends TestCase
         }
         $this->assertTrue($success === true);
 
-        $oneEnum = EnumTestClassDocBlockEnforced::{'two'}();
+        $oneEnum = EnumTestClassEnforced::{'two'}();
         switch ($oneEnum)
         {
-            case EnumTestClassDocBlockEnforced::{'two'}():
+            case EnumTestClassEnforced::{'two'}():
                 $success = true;
                 break;
             default:
@@ -151,10 +151,10 @@ class EnumTest extends TestCase
         }
         $this->assertTrue($success === true);
 
-        $oneEnum = EnumTestClassDocBlockEnforced::{'two'}();
+        $oneEnum = EnumTestClassEnforced::{'two'}();
         switch ($oneEnum)
         {
-            case EnumTestClassDocBlockEnforced::two():
+            case EnumTestClassEnforced::two():
                 $success = true;
                 break;
             default:
@@ -163,10 +163,10 @@ class EnumTest extends TestCase
         }
         $this->assertTrue($success === true);
 
-        $oneEnum = EnumTestClassDocBlockEnforced::{'three'}();
+        $oneEnum = EnumTestClassEnforced::{'three'}();
         switch ($oneEnum)
         {
-            case EnumTestClassDocBlockEnforced::two():
+            case EnumTestClassEnforced::two():
                 $success = true;
                 break;
             default:

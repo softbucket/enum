@@ -14,7 +14,7 @@ namespace Softbucket\Enum;
  *
  * @author Ed Mak <ed.mak.is@gmail.com>
  */
-abstract class EnumDocBlockEnforced extends Enum
+abstract class EnumEnforced extends Enum
 {
     /**
      * @param string $methodName
