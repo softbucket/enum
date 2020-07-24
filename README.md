@@ -12,8 +12,7 @@ Feel free to support me :D
 ## What you're getting in this package
 
 ### 1. Simple
-The softbucket implementation does not require constants to be defined.   
-Example:
+The softbucket implementation does not require constants to be defined.
 ```
 <?php
 use Softbucket\Enum\Enum;
@@ -33,7 +32,7 @@ Use PHP's natural comparator. This works by comparing objects references.
 Meridiem::one() === Meridiem::one() //true
 ```
 ```
-Meridiem::one() == Meridiem::one() //true
+Meridiem::one() == Meridiem::one() //also true
 ```
 
 ### 3. Easy Parsing
