@@ -6,12 +6,12 @@
 
 namespace Softbucket\Tests\Enum;
 
-use Softbucket\Enum\EnumEnforced;
+use Softbucket\Enum\Enum;
 
 /**
  * @method static self one()
  * @method static self two()
  */
-class EnumTestClassEnforced extends EnumEnforced
+class EnumTestClass extends Enum
 {
 }

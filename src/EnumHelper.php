@@ -15,6 +15,7 @@ class EnumHelper extends Enum
 {
     /**
      * The array elements will be of the type that is passed in. Keys will be the enum's name.
+     * To mitigate performance issues of phpdoc reading, anything that validates the docblock is lazy-loaded
      * 
      * @param $className
      * @return Enum[]
@@ -22,6 +23,20 @@ class EnumHelper extends Enum
     public static function allEnums($className)
     {
         return Enum::getAllEnums($className);
+    }
+    /**
+     * Validates the enum against the doc blocks.
+     * To mitigate performance issues of phpdoc reading, anything that validates the docblock is lazy-loaded
+     *
+     * @param Enum $enum
+     * @return boolean
+     */
+    public static function isDefined($enum)
+    {
+        $class = get_class($enum);
+        Enum::initializeEnums($class);
+        /** @var Enum $className */
+        return isset(($enum::$enumsFromDocBlock)[$class][$enum->name()]);
     }
 
     /**

@@ -22,6 +22,9 @@ abstract class Enum
     /** @var bool[][] */
     protected static $enumInitialisedFromDocBlock = array();
 
+    /** @var static[][] */
+    protected static $enumsFromDocBlock = array();
+
     /** @var string  */
     protected $enumName;
 
@@ -92,6 +95,7 @@ abstract class Enum
                 }
             }
             self::$enumInitialisedFromDocBlock[$className] = true;
+            self::$enumsFromDocBlock[$className] = $newEnums;
         }
     }
 
@@ -112,19 +116,5 @@ abstract class Enum
     public function name()
     {
         return $this->enumName;
-    }
-
-    public function __serialize()
-    {
-        return [
-            'class' => static::class,
-            'value' => $this->name()
-        ];
-    }
-
-    public function __unserialize($serialized)
-    {
-        $json = $serialized;
-        return $json['class']::$json['value']();
     }
 }
