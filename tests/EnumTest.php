@@ -107,7 +107,6 @@ class EnumTest extends TestCase
     public function testSerialize()
     {
         $serializedEnum = EnumHelper::serialize(EnumTestClass::one());
-        print_r($serializedEnum);
         $unserailzedEnum = EnumHelper::unserialize($serializedEnum);
         $this->assertTrue($unserailzedEnum === EnumTestClass::one());
     }

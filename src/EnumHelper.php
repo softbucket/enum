@@ -36,7 +36,8 @@ class EnumHelper extends Enum
         $class = get_class($enum);
         Enum::initializeEnums($class);
         /** @var Enum $className */
-        return isset(($enum::$enumsFromDocBlock)[$class][$enum->name()]);
+        $enumsFromDocBlock = $enum::$enumsFromDocBlock;
+        return isset($enumsFromDocBlock[$class][$enum->name()]);
     }
 
     /**
