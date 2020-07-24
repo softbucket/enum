@@ -23,4 +23,29 @@ class EnumHelper extends Enum
     {
         return Enum::getAllEnums($className);
     }
+
+    /**
+     * You will need these serialize/unserialize methods if you want to store and retrieve the enums for === to work properly
+     * @param Enum $enum
+     * @return string
+     */
+    public static function serialize($enum)
+    {
+        return \json_encode([
+            'class' => get_class($enum),
+            'value' => $enum->name()
+        ], JSON_UNESCAPED_SLASHES);
+    }
+
+    /**
+     * You will need these serialize/unserialize methods if you want to store and retrieve the enums for === to work properly
+     *
+     * @param string $enumString
+     * @return mixed
+     */
+    public static function unserialize($enumString)
+    {
+        $json = json_decode($enumString, true);
+        return $json['class']::{$json['value']}();
+    }
 }

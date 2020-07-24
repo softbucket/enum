@@ -175,4 +175,12 @@ class EnumTest extends TestCase
         }
         $this->assertTrue($success === false);
     }
+
+    public function testSerialize()
+    {
+        $serializedEnum = EnumHelper::serialize(EnumTestClassEnforced::one());
+        print_r($serializedEnum);
+        $unserailzedEnum = EnumHelper::unserialize($serializedEnum);
+        $this->assertTrue($unserailzedEnum === EnumTestClassEnforced::one());
+    }
 }

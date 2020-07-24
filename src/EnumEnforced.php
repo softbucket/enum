@@ -8,8 +8,6 @@
 namespace Softbucket\Enum;
 
 /**
- * Base Enum class
- *
  * Same as Enum, except it enforces the doc block (ie misses will return null)
  *
  * @author Ed Mak <ed.mak.is@gmail.com>

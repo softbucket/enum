@@ -113,4 +113,18 @@ abstract class Enum
     {
         return $this->enumName;
     }
+
+    public function __serialize()
+    {
+        return [
+            'class' => static::class,
+            'value' => $this->name()
+        ];
+    }
+
+    public function __unserialize($serialized)
+    {
+        $json = $serialized;
+        return $json['class']::$json['value']();
+    }
 }

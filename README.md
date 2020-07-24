@@ -11,16 +11,7 @@ Feel free to support me :D
 
 ## What you're getting in this package
 
-### 1. Comparator Support `===` and `==`
-Use PHP's natural comparator
-```
-Meridiem::one() === Meridiem::one() //true
-```
-```
-Meridiem::one() == Meridiem::one() //true
-```
-
-### 2. Simple
+### 1. Simple
 The softbucket implementation does not require constants to be defined.   
 Example:
 ```
@@ -36,6 +27,15 @@ class Meridiem extends Enum
 }
 ```
 
+### 2. Comparator Support `===` and `==`
+Use PHP's natural comparator. This works by comparing objects references.
+```
+Meridiem::one() === Meridiem::one() //true
+```
+```
+Meridiem::one() == Meridiem::one() //true
+```
+
 ### 3. Easy Parsing
 Parsing a string into an enum is very easy.  
 ```
@@ -43,10 +43,12 @@ $AMString = 'AM';
 Meridiem::{$AMString}(); 
 ```
 
-### 4. No utility methods
+### 4. Helper utility methods
 The Enum objects are clean of utility methods. Use EnumHelper to grab am array of Enums.
 ```
 EnumHelper::allEnums(Meridiem::class);
+EnumHelper::serialize($enum);
+EnumHelper::unserialize($enumString);
 ```
 
 Goodbye
